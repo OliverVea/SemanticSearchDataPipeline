@@ -1,0 +1,26 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+product: "<#= ProductName #>"
+variant: "<#= SkuName #>"
+<# if (!string.IsNullOrEmpty(Product.ShortDescription)) {#>
+summary: "<#= ShortDescription #>"
+<# } #>
+<# if (!string.IsNullOrEmpty(Product.LongDescription)) {#>
+description: "<#= ProductLongDescription #>"
+<# } #>
+<# if (Product.AlternativeSearchWords.Any()) { #>
+alternative search words: "<#= ProductAlternativeSearchWordsString #>"
+<# } #>
+<# if (Product.Categories.Length > 1) { #>
+categories:
+<# foreach (var category in CategoryStrings) { #>
+- "<#= category #>"
+<# } #>
+<# } #>
+<# if (Product.Categories.Length == 1) { #>
+category: "<#= CategoryStrings.First() #>"
+<# } #>
+<# foreach (var attribute in Attributes) { #>
+<#= attribute.Key #>: "<#= attribute.Value #>"
+<# } #>

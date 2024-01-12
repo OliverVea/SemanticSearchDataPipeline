@@ -1,0 +1,7 @@
+/.idea
+
+**/bin
+**/obj
+
+**/davidsen-products.json
+**/davidsen-skus.json
