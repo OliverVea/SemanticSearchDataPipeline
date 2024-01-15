@@ -9,17 +9,21 @@ public class PipelineModuleProcessor(ILogger<PipelineModuleProcessor> logger)
     
     public async Task RunAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        if (Module is not {} module) throw new InvalidOperationException("Module is null.");
+        
+        while (!module.Finished && !cancellationToken.IsCancellationRequested)
         {
             try
             {
-                await Module!.ProcessAsync(cancellationToken);
+                await module.ProcessAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error processing module {ModuleName}", Module?.Name);
+                logger.LogError(ex, "Error processing module {ModuleName}", module.Name);
             }
             await Task.Delay(SleepTime, cancellationToken);
         }
+        
+        logger.LogInformation("Module {ModuleName} finished.", module.Name);
     }
 }

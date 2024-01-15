@@ -27,4 +27,9 @@ public class DataPipeline(IServiceProvider serviceProvider)
         
         await Task.WhenAll(processors.Select(p => p.RunAsync(cancellationToken)));
     }
+
+    public void Clear()
+    {
+        _modules.Clear();
+    }
 }

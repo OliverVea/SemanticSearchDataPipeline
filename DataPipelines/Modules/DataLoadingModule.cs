@@ -1,5 +1,6 @@
 ﻿using DataPipelines.Core;
 using DataPipelines.Extensions;
+using DataPipelines.Models;
 
 namespace DataPipelines.Modules;
 
@@ -26,6 +27,7 @@ public abstract class DataLoadingModule<TOut> : IDataPipelineModule
         foreach (var outputPipe in OutputPipes) outputPipe.Enqueue(productData);
         
         Finished = true;
+        foreach (var outputPipe in OutputPipes) outputPipe.FinishedInput = true;
     }
 
     protected abstract Task<IEnumerable<TOut>> LoadDataAsync(CancellationToken cancellationToken);

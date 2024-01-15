@@ -16,6 +16,6 @@ public static class EmbeddingServiceExtensions
         services.AddSingleton(configuration);
         services.AddSingleton(client);
         
-        services.AddSingleton<ITextEmbedder, OpenAIEmbedder>();
+        services.AddSingleton<ITextEmbeddingClient, OpenAIEmbeddingClient>();
     }
 }

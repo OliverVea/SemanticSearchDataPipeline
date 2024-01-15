@@ -11,8 +11,9 @@ public class LoggingModule<T>(ILogger<LoggingModule<T>> logger) : IDataPipelineM
     public Func<T, int, string> Stringify { get; set; } = (item, _) => item?.ToString() ?? string.Empty;
 
     public string Name => nameof(LoggingModule<T>);
+    public bool Finished { get; private set; }
 
-    private int i;
+    private int _i;
 
     public Task ProcessAsync(CancellationToken cancellationToken)
     {
@@ -27,11 +28,13 @@ public class LoggingModule<T>(ILogger<LoggingModule<T>> logger) : IDataPipelineM
         var input = inputPipe.Dequeue(BatchSize);
         
         foreach (var item in input) Log(item);
+        
+        if (inputPipe.FinishedInput) Finished = true;
     }
 
     private void Log(T item)
     {
-        var message = Stringify(item, i++);
+        var message = Stringify(item, _i++);
         if (string.IsNullOrWhiteSpace(message)) return;
         
         logger.LogInformation(message);

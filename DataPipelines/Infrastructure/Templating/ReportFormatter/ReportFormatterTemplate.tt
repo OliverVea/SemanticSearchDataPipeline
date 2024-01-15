@@ -1,0 +1,11 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+# <#= Report.Query #>
+<#
+    var similarities = Report.Similarities.ToArray();
+    for (var i = 0; i < similarities.Length; i++) {
+        var similarity = similarities[i];
+        var productData = ProductData[similarity.SkuId]; #>
+<#= i + 1 #>. <#= productData.Sku.Name #> (<#= similarities[i].Similarity * 100 #>%)
+<# } #>

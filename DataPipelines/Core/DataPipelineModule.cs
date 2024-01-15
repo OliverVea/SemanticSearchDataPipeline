@@ -20,11 +20,14 @@ public abstract class DataPipelineModule<TIn, TOut>(ILogger logger) : IDataPipel
     private ProcessingState _processingState = ProcessingState.None;
     
     public abstract string Name { get; }
+    public bool Finished { get; private set; }
     protected virtual int OutputFullThreshold => 256;
     protected virtual int InputBatchSize => 256;
 
     public async Task ProcessAsync(CancellationToken cancellationToken)
     {
+        if (Finished) return;
+        
         var inputPipe = InputPipe;
         if (!UpdateProcessingState(inputPipe, cancellationToken)) return;
         
@@ -57,10 +60,21 @@ public abstract class DataPipelineModule<TIn, TOut>(ILogger logger) : IDataPipel
         if (cancellationToken.IsCancellationRequested) _processingState = ProcessingState.Cancelled;
         else if (inputPipe is null) _processingState = ProcessingState.NoInputPipe;
         else if (OutputPipes.Count == 0) _processingState = ProcessingState.NoOutputPipes;
+        else if (inputPipe is { FinishedInput: true, IsEmpty: true })
+        {
+            _processingState = ProcessingState.Finished;
+            Finished = true;
+            OnFinished();
+            foreach (var outputPipe in OutputPipes) outputPipe.FinishedInput = true;
+        }
         else if (inputPipe.IsEmpty) _processingState = ProcessingState.WaitingForInput;
         else if (OutputPipes.Any(x => x.Count >= OutputFullThreshold)) _processingState = ProcessingState.OutputQueueFull;
         else _processingState = ProcessingState.Processing;
         
         return _processingState == ProcessingState.Processing;
+    }
+    
+    protected virtual void OnFinished()
+    {
     }
 }

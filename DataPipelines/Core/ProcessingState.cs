@@ -8,5 +8,6 @@ public enum ProcessingState
     Processing,
     Cancelled,
     NoInputPipe,
-    NoOutputPipes
+    NoOutputPipes,
+    Finished
 }

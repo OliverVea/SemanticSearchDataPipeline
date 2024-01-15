@@ -2,6 +2,6 @@
 
 public record ProductData : Data
 {
-    public required SkuInformation Sku { get; set; }
-    public required ProductInformation Product { get; set; }
+    public required SkuInformation Sku { get; init; }
+    public required ProductInformation Product { get; init; }
 }

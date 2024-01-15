@@ -2,6 +2,6 @@
 
 public record CategoryInformation
 {
-    public CategoryPathElementInformation[] CategoryPathElements { get; set; } = Array.Empty<CategoryPathElementInformation>();
+    public CategoryPathElementInformation[] CategoryPathElements { get; init; } = Array.Empty<CategoryPathElementInformation>();
         
 }
